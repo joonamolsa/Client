@@ -1,0 +1,187 @@
+/* Perusrunko */
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #21215a;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  color: #e9e9f4;
+}
+
+.app-container {
+  margin-top: 40px;
+  width: 100%;
+  width: 520px;
+  background: #000; /* korttimainen musta tausta sovellukselle */
+  padding: 24px 28px;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Otsikko */
+h1 {
+  margin: 0 0 14px;
+  text-align: center;
+  color: #4a90e2;
+}
+
+/* Tabit */
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 12px 0 20px;
+}
+
+.tab {
+  background: #21215a;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.05s;
+}
+.tab:hover {
+  background: #3a3a80;
+}
+.tab:active {
+  transform: translateY(1px);
+}
+.tab.active {
+  background: #4a90e2;
+}
+
+/* Lomake */
+.entity-form {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.entity-form input {
+  padding: 10px 12px;
+  border: 1px solid #3a3a80;
+  border-radius: 8px;
+  background: #0d0d1f;
+  color: #e9e9f4;
+  outline: none;
+}
+.entity-form input::placeholder {
+  color: #9aa0b5;
+}
+.entity-form input:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.25);
+}
+
+/* Toimintonapit rivissä */
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+button {
+  padding: 9px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #4a90e2;
+  color: #fff;
+  transition: background 0.2s, transform 0.05s;
+}
+button:hover {
+  background: #3a7bc0;
+}
+button:active {
+  transform: translateY(1px);
+}
+
+.btn-secondary {
+  background: #6b7280;
+}
+.btn-secondary:hover {
+  background: #575d6b;
+}
+
+.btn-edit {
+  background: #4a90e2;
+}
+.btn-edit:hover {
+  background: #3a7bc0;
+}
+
+.btn-delete {
+  background: #d9534f;
+}
+.btn-delete:hover {
+  background: #c9302c;
+}
+
+/* Lista & kortit (yhteiset kaikille välilehdille) */
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  background: #0f0f24;
+  border: 1px solid #2a2a55;
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+
+/* Sisältö rivittyy – pitkät numerotkin */
+.card-main {
+  flex: 1;
+  min-width: 0;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+.card-main strong {
+  font-size: 1.08rem;
+  color: #ffffff;
+}
+.card-main .muted {
+  color: #a0a6bf;
+  font-size: 0.92rem;
+  margin-top: 2px;
+}
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Tilaviestit */
+.error {
+  color: #ff6b6b;
+  font-weight: 600;
+  margin: 10px 0;
+}
+.loading,
+.empty {
+  text-align: center;
+  color: #c9cbe2;
+  font-style: italic;
+  margin: 8px 0 2px;
+}
+
+/* Responsiivisuus */
+@media (max-width: 700px) {
+  .card {
+    flex-direction: column;
+  }
+  .card-actions {
+    align-self: flex-end;
+  }
+}

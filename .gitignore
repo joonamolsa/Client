@@ -1,0 +1,28 @@
+# Ympäristömuuttujat
+.env
+.env.local
+.env.development.local
+.env.production.local
+
+# Riippuvuudet
+/node_modules
+
+# Buildit
+/dist
+/dist-ssr
+/build
+
+# Lokit
+*.log
+
+# Test coverage
+/coverage
+*.lcov
+
+# OS roskat ja editorit
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/*
+!.vscode/extensions.json
+.idea
