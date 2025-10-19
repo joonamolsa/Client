@@ -1,49 +1,51 @@
-// Yritysten hallintaan liittyvä näkymä
+// Komponentit näyttävät, lisäävät, muokkaavat ja poistavat tietoja yrityksistä
 import { useEffect, useState } from "react";
-import { CompaniesAPI } from "../api";
+import { useData } from "../context/DataContext";
 import Card from "../components/Card";
 
 export default function Companies() {
-  const [items, setItems] = useState([]);
+  const { useSlice, load, create, update, remove } = useData();
+  const { items, loading, error } = useSlice("companies");
+
   const [form, setForm] = useState({ name: "", phone: "", city: "" });
   const [editingId, setEditingId] = useState(null);
-  const [error, setError] = useState("");
 
-  const load = async (params = {}) => {
-    try {
-      setItems(await CompaniesAPI.list(params));
-    } catch (e) {
-      setError(e.response?.data?.error || e.message);
-    }
-  };
   useEffect(() => {
-    load();
-  }, []);
+    load("companies");
+  }, [load]);
+
+  const reset = () => setForm({ name: "", phone: "", city: "" });
 
   const submit = async (e) => {
     e.preventDefault();
-    if (!form.name.trim() || !form.phone.trim())
-      return setError("Nimi ja puhelin ovat pakollisia");
-    try {
-      if (editingId) {
-        const saved = await CompaniesAPI.update(editingId, form);
-        setItems((prev) => prev.map((x) => (x.id === editingId ? saved : x)));
-        setEditingId(null);
-      } else {
-        const saved = await CompaniesAPI.create(form);
-        setItems((prev) => [saved, ...prev]);
-      }
-      setForm({ name: "", phone: "", city: "" });
-      setError("");
-    } catch (e) {
-      setError(e.response?.data?.error || e.message);
+    if (!form.name.trim() || !form.phone.trim()) return;
+
+    const body = {
+      name: form.name.trim(),
+      phone: form.phone.trim(),
+      city: form.city.trim() || null,
+    };
+
+    if (editingId) {
+      await update("companies", editingId, body);
+      setEditingId(null);
+    } else {
+      await create("companies", body);
     }
+    reset();
   };
 
-  const search = () => load(form);
+  const search = () => {
+    const params = {};
+    if (form.name.trim()) params.name = form.name.trim();
+    if (form.phone.trim()) params.phone = form.phone.trim();
+    if (form.city.trim()) params.city = form.city.trim();
+    load("companies", params);
+  };
+
   const clear = () => {
-    setForm({ name: "", phone: "", city: "" });
-    load();
+    reset();
+    load("companies");
   };
 
   return (
@@ -65,39 +67,51 @@ export default function Companies() {
           onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
         />
         <div className="actions">
-          <button type="submit">{editingId ? "Tallenna" : "Lisää"}</button>
+          <button
+            type="submit"
+            disabled={!form.name.trim() || !form.phone.trim()}
+          >
+            {editingId ? "Tallenna" : "Lisää"}
+          </button>
           <button type="button" className="btn-secondary" onClick={search}>
             Haku
           </button>
           <button type="button" className="btn-secondary" onClick={clear}>
-            Tyhjennä
+            Tyhjennä & Näytä kaikki
           </button>
         </div>
       </form>
 
       {error && <p className="error">{error}</p>}
 
-      <div className="card-list">
-        {items.map((it) => (
-          <Card
-            key={it.id}
-            variant="company"
-            heading={it.name}
-            rows={[
-              { text: it.phone },
-              { text: `Paikkakunta: ${it.city || "—"}`, muted: true },
-            ]}
-            onEdit={() => {
-              setForm({ name: it.name, phone: it.phone, city: it.city || "" });
-              setEditingId(it.id);
-            }}
-            onDelete={async () => {
-              await CompaniesAPI.remove(it.id);
-              setItems((prev) => prev.filter((x) => x.id !== it.id));
-            }}
-          />
-        ))}
-      </div>
+      {loading ? (
+        <p className="loading">Ladataan…</p>
+      ) : items.length === 0 ? (
+        <p className="empty">Ei yrityksiä.</p>
+      ) : (
+        <div className="card-list">
+          {items.map((it) => (
+            <Card
+              key={it.id}
+              variant="company"
+              heading={it.name}
+              rows={[
+                { text: it.phone },
+                { text: `Paikkakunta: ${it.city || "—"}`, muted: true },
+              ]}
+              onEdit={() => {
+                setForm({
+                  name: it.name || "",
+                  phone: it.phone || "",
+                  city: it.city || "",
+                });
+                setEditingId(it.id);
+              }}
+              onDelete={() => remove("companies", it.id)}
+            />
+          ))}
+        </div>
+      )}
     </>
   );
 }

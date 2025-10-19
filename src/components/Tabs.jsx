@@ -1,5 +1,8 @@
 // komponentti, joka renderöi välilehdet ja käsittelee niiden vaihtamista
-export default function Tabs({ value, onChange }) {
+import { useApp } from "../context/AppContext";
+
+export default function Tabs() {
+  const { view, setView } = useApp();
   const tabs = [
     { key: "contacts", label: "Kontaktit" },
     { key: "companies", label: "Yritykset" },
@@ -10,8 +13,8 @@ export default function Tabs({ value, onChange }) {
       {tabs.map((t) => (
         <button
           key={t.key}
-          className={`tab ${value === t.key ? "active" : ""}`}
-          onClick={() => onChange(t.key)}
+          className={`tab ${view === t.key ? "active" : ""}`}
+          onClick={() => setView(t.key)}
         >
           {t.label}
         </button>
